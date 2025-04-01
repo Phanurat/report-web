@@ -69,6 +69,29 @@ def login():
             return redirect(url_for('dashboard'))
     return render_template('login.html')
 
+# หน้า Register
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        # ตรวจสอบว่าชื่อผู้ใช้ซ้ำไหม
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            return "Username already exists, please choose another one."
+        
+        # สร้างผู้ใช้ใหม่
+        new_user = User(username=username, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        # ล็อกอินและเปลี่ยนไปยัง Dashboard
+        login_user(new_user)
+        return redirect(url_for('dashboard'))
+    
+    return render_template('register.html')
+
 # หน้า Dashboard หลังจากล็อกอิน
 @app.route('/dashboard')
 @login_required
@@ -95,11 +118,6 @@ def dashboard():
 def logout():
     logout_user()
     return redirect(url_for('home'))
-
-# สร้างฐานข้อมูล
-@app.before_first_request
-def create_tables():
-    db.create_all()
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
