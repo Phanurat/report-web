@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h2>Welcome, {{ session['user'] }}</h2>
+    <a href="/logout">Logout</a>
+    <h3>Attendance Records</h3>
+    <ul>
+        {% for record in records %}
+            <li>Check-in: {{ record['check_in'] }} | Check-out: {{ record['check_out'] }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/check-in">Check In</a>
+    <a href="/check-out">Check Out</a>
+</body>
+</html>
